@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Order | OSRS Clan</title>
+    <title>Cosmic Order | OSRS Social & PvM Clan</title>
+    
+    <!-- Favicon Integration -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Optional PNG fallback for high-res screens -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
     <style>
         :root {
-            --bg-color: #0b0d17;
-            --card-bg: #151828;
-            --accent-gold: #e2b042;
-            --accent-purple: #8a5cf6;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
+            --bg-dark: #080511;
+            --card-bg: rgba(22, 16, 41, 0.75);
+            --card-border: rgba(184, 137, 255, 0.2);
+            --gold-glow: #f5c453;
+            --purple-neon: #a855f7;
+            --purple-deep: #3b0764;
+            --text-light: #f1f5f9;
+            --text-muted: #cbd5e1;
         }
 
         * {
@@ -22,118 +30,179 @@
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.25), transparent 70%),
+                radial-gradient(circle at 80% 40%, rgba(59, 7, 100, 0.4), transparent 50%);
+            background-attachment: fixed;
         }
 
-        header {
-            background: linear-gradient(180deg, rgba(138, 92, 246, 0.15) 0%, rgba(11, 13, 23, 1) 100%);
+        /* Hero Banner Section */
+        .hero {
+            position: relative;
             text-align: center;
-            padding: 100px 20px 60px;
-            border-bottom: 1px solid rgba(226, 176, 66, 0.2);
+            padding: 60px 20px;
+            background: linear-gradient(180deg, rgba(8, 5, 17, 0.3) 0%, var(--bg-dark) 100%);
+            overflow: hidden;
         }
 
-        header h1 {
-            font-size: 3.5rem;
-            color: var(--accent-gold);
-            letter-spacing: 3px;
+        .banner-container {
+            max-width: 950px;
+            margin: 0 auto 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.35), 0 0 15px rgba(245, 196, 83, 0.2);
+            border: 1px solid rgba(245, 196, 83, 0.3);
+        }
+
+        .banner-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            color: var(--gold-glow);
+            letter-spacing: 2px;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(226, 176, 66, 0.4);
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(245, 196, 83, 0.5);
         }
 
-        header p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 30px;
+        /* Buttons */
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
         }
 
         .btn-discord {
-            display: inline-block;
-            background-color: var(--accent-purple);
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(138, 92, 246, 0.4);
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
         }
 
         .btn-discord:hover {
-            background-color: #7c3aed;
             transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(138, 92, 246, 0.7);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.7);
         }
 
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gold-glow);
+            border: 1px solid var(--gold-glow);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(245, 196, 83, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Container */
         .container {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 50px 20px;
+            padding: 40px 20px 60px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-top: 3px solid var(--accent-gold);
-            border-radius: 8px;
-            padding: 25px;
-        }
-
-        .card h2 {
-            color: var(--accent-gold);
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-
-        .card ul {
-            list-style-position: inside;
-            color: var(--text-muted);
-        }
-
-        .card li {
-            margin-bottom: 8px;
-        }
-
+        /* Quick Stats Banner */
         .stats-banner {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
+            text-align: center;
             margin-bottom: 50px;
-            border: 1px solid rgba(138, 92, 246, 0.2);
         }
 
         .stat-item h3 {
-            font-size: 2.5rem;
-            color: var(--accent-gold);
+            font-size: 2.2rem;
+            color: var(--gold-glow);
+            margin-bottom: 5px;
         }
 
         .stat-item p {
             color: var(--text-muted);
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             letter-spacing: 1px;
+        }
+
+        /* Grid Section */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
+            border-top: 3px solid var(--purple-neon);
+            border-radius: 10px;
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card.gold-header {
+            border-top-color: var(--gold-glow);
+        }
+
+        .card h2 {
+            color: var(--gold-glow);
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card ul {
+            list-style: none;
+        }
+
+        .card li {
+            position: relative;
+            padding-left: 22px;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+        }
+
+        .card li::before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: var(--purple-neon);
         }
 
         footer {
             text-align: center;
-            padding: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--text-muted);
             font-size: 0.9rem;
         }
@@ -141,58 +210,67 @@
 </head>
 <body>
 
-    <header>
-        <h1>Cosmic Order</h1>
-        <p>A Social, PvM, and Skill-focused Old School RuneScape Clan. Exploring the stars of Gielinor together.</p>
-        <a href="https://discord.gg/3sa2c7xxwy" class="btn-discord" target="_blank">Join Our Discord</a>
-    </header>
+    <section class="hero">
+        <div class="banner-container">
+            <!-- Place your image file in the same directory and name it cosmic-banner.jpg -->
+            <img src="images/cosmic-banner.png" alt="Cosmic Order Banner" class="banner-img">
+        </div>
+        <div class="tagline">✦ Social ✦ Cosmic ✦ Community ✦</div>
+        <div class="cta-group">
+            <a href="https://discord.gg/3sa2c7xxwy" target="_blank" class="btn btn-discord">Join Our Discord</a>
+            <a href="#about" class="btn btn-secondary">Learn More</a>
+        </div>
+    </section>
 
-    <div class="container">
+    <div class="container" id="about">
         
         <div class="stats-banner">
             <div class="stat-item">
-                <h3>100+</h3>
-                <p>Members</p>
+                <h3>FC: CosmicOrder</h3>
+                <p>In-Game Clan Chat</p>
             </div>
             <div class="stat-item">
                 <h3>World 440</h3>
                 <p>Home World</p>
             </div>
             <div class="stat-item">
-                <h3>EST / GMT</h3>
-                <p>Primary Timezones</p>
+                <h3>Global</h3>
+                <p>NA & EU Timezones</p>
+            </div>
+            <div class="stat-item">
+                <h3>All Levels</h3>
+                <p>Social & PvM Friendly</p>
             </div>
         </div>
 
         <div class="grid">
-            <div class="card">
-                <h2>What We Offer</h2>
+            <div class="card gold-header">
+                <h2>⚔️ PvM & Bossing</h2>
                 <ul>
-                    <li>Weekly Bossing & Raids (CoX, ToA, ToB)</li>
-                    <li>Skill of the Week (SotW) & BotW competitions</li>
-                    <li>Casual social events & minigames</li>
-                    <li>Active Discord voice & text channels</li>
-                    <li>Mentor system for teaching end-game content</li>
+                    <li><strong>Learner Raids:</strong> Friendly runs for CoX, ToA, and ToB.</li>
+                    <li><strong>Bossing Mass Events:</strong> Nightmare, Nex, Corp, and God Wars.</li>
+                    <li><strong>PvM Mentorship:</strong> Gear advice, prayer flicking, and tile setups.</li>
+                    <li><strong>Bingo & Competitions:</strong> Team PvM tile races with big pot payouts.</li>
                 </ul>
             </div>
 
             <div class="card">
-                <h2>Requirements</h2>
+                <h2>✨ Social & Community</h2>
                 <ul>
-                    <li><strong>Socials:</strong> Open to all levels & accounts</li>
-                    <li><strong>PvMers:</strong> 100+ Combat (Recommended)</li>
-                    <li>Active in Discord and/or Clan Chat</li>
-                    <li>No toxicity — follow Jagex & Clan Rules</li>
+                    <li><strong>Skill of the Week (SotW):</strong> Regular XP competitions.</li>
+                    <li><strong>Casual Events:</strong> Hide & Seek, Quiz Nights, and Minigame Runs.</li>
+                    <li><strong>Active Voice Chats:</strong> Friendly bantering while grinding.</li>
+                    <li><strong>Chill Atmosphere:</strong> Zero toxicity policy — all playstyles welcome.</li>
                 </ul>
             </div>
 
-            <div class="card">
-                <h2>Leadership</h2>
+            <div class="card gold-header">
+                <h2>📜 Clan Requirements</h2>
                 <ul>
-                    <li><strong>Owner: Armdez</strong>
-                    <li><strong>Deputies:</strong> Im Absent, AsapLamb, Parkingmeter</li>
-                    <li><strong>Moderators:</strong> Gar_32, BSPxx, Im Pinoy, Le Ahrims, King Heredit</li>
-                    <li><strong>Events Team:</strong> Saminal & Orionmoos</li>
+                    <li><strong>Account Type:</strong> Main, GIM, Ironmen, and Pure friendly.</li>
+                    <li><strong>Discord:</strong> Joining our Discord server is required for ranks.</li>
+                    <li><strong>Behavior:</strong> Respect all clan members and follow Jagex Rules.</li>
+                    <li><strong>Activity:</strong> Stay active in CC or Discord voice/text channels.</li>
                 </ul>
             </div>
         </div>
@@ -200,7 +278,7 @@
     </div>
 
     <footer>
-        <p>&copy; Cosmic Order OSRS Clan. RuneScape is a registered trademark of Jagex Ltd.</p>
+        <p>&copy; Cosmic Order OSRS Clan. Old School RuneScape is a registered trademark of Jagex Ltd.</p>
     </footer>
 
 </body>
