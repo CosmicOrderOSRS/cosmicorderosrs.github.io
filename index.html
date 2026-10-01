@@ -5,233 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmic Order | OSRS Social & PvM Clan</title>
     
-  <!-- Favicon Links -->
-  <link rel="icon" type="image/png" href="images/Logo.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/Logo.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/Logo.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/Logo.png">
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/png" href="images/Logo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/Logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/Logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/Logo.png">
 
-    <style>
-        :root {
-            --bg-dark: #080511;
-            --card-bg: rgba(22, 16, 41, 0.75);
-            --card-border: rgba(184, 137, 255, 0.2);
-            --gold-glow: #f5c453;
-            --purple-neon: #a855f7;
-            --purple-deep: #3b0764;
-            --text-light: #f1f5f9;
-            --text-muted: #cbd5e1;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.25), transparent 70%),
-                radial-gradient(circle at 80% 40%, rgba(59, 7, 100, 0.4), transparent 50%);
-            background-attachment: fixed;
-        }
-
-        /* Hero Banner Section */
-        .hero {
-            position: relative;
-            text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(180deg, rgba(8, 5, 17, 0.3) 0%, var(--bg-dark) 100%);
-            overflow: hidden;
-        }
-
-        .banner-container {
-            max-width: 950px;
-            margin: 0 auto 25px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 0 35px rgba(168, 85, 247, 0.35), 0 0 15px rgba(245, 196, 83, 0.2);
-            border: 1px solid rgba(245, 196, 83, 0.3);
-        }
-
-        .banner-img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .tagline {
-            font-size: 1.3rem;
-            color: var(--gold-glow);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px rgba(245, 196, 83, 0.5);
-        }
-
-        /* Buttons */
-        .cta-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.05rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-discord {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-discord:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.7);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--gold-glow);
-            border: 1px solid var(--gold-glow);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(245, 196, 83, 0.15);
-            transform: translateY(-2px);
-        }
-
-        /* Main Content Container */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 20px 60px;
-        }
-
-        /* Quick Stats Banner */
-        .stats-banner {
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 25px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .stat-item h3 {
-            font-size: 2.2rem;
-            color: var(--gold-glow);
-            margin-bottom: 5px;
-        }
-
-        .stat-item p {
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        /* Grid Section */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--card-border);
-            border-top: 3px solid var(--purple-neon);
-            border-radius: 10px;
-            padding: 30px;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-        }
-
-        .card.gold-header {
-            border-top-color: var(--gold-glow);
-        }
-
-        .card h2 {
-            color: var(--gold-glow);
-            font-size: 1.4rem;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card ul {
-            list-style: none;
-        }
-
-        .card li {
-            position: relative;
-            padding-left: 22px;
-            margin-bottom: 12px;
-            color: var(--text-muted);
-        }
-
-        .card li::before {
-            content: "✦";
-            position: absolute;
-            left: 0;
-            color: var(--purple-neon);
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-    </style>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<header style="background: rgba(8, 5, 17, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(184, 137, 255, 0.2); position: sticky; top: 0; z-index: 100;">
-    <div style="max-width: 1100px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
-        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #f1f5f9;">
-            <img src="images/Logo.png" alt="Cosmic Order Logo" style="width: 38px; height: 38px;">
-            <span style="font-size: 1.25rem; font-weight: 700; color: #f5c453; letter-spacing: 1px; text-transform: uppercase;">Cosmic Order</span>
-        </a>
-        <ul style="display: flex; gap: 20px; list-style: none;">
-            <li><a href="index.html" style="color: #f5c453; text-decoration: none; font-weight: 600; font-size: 0.95rem;">Home</a></li>
-            <li><a href="gallery.html" style="color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 0.95rem;">Gallery</a></li>
-            <li><a href="https://discord.gg/3sa2c7xxwy" target="_blank" style="color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 0.95rem;">Discord</a></li>
-        </ul>
-    </div>
-</header>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="images/Logo.png" alt="Cosmic Order Logo">
+                <span class="logo-title">Cosmic Order</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="https://discord.gg/3sa2c7xxwy" target="_blank">Discord</a></li>
+            </ul>
+        </div>
+    </header>
+
     <section class="hero">
         <div class="banner-container">
-            <!-- Place your image file in the same directory and name it cosmic-banner.jpg -->
             <img src="images/cosmic-banner.png" alt="Cosmic Order Banner" class="banner-img">
         </div>
         <div class="tagline">✦ The Stars Call! Will You Answer? ✦</div>
         <div class="cta-group">
             <a href="https://discord.gg/3sa2c7xxwy" target="_blank" class="btn btn-discord">Join Our Discord</a>
-            <a href="#about" class="btn btn-secondary">Learn More</a>
+            <!--a href="#about" class="btn btn-secondary">Learn More</a-->
         </div>
     </section>
 
@@ -256,6 +61,16 @@
             </div>
         </div>
 
+
+        
+        <!-- About Clan Section -->
+        <section class="about-clan-card">
+            <h2>🌌 About Cosmic Order</h2>
+            <p>
+                Welcome to <strong>Cosmic Order</strong>! We are a vibrant, welcoming Old School RuneScape social and PvM clan dedicated to creating a relaxed, inclusive community for players of all levels and account types. Whether you're taking your first steps in Gielinor, looking for friendly learner raid groups, or chasing end-game bossing achievements, our community is built to support your journey.
+            </p>
+        </section>
+            
         <div class="grid">
             <div class="card gold-header">
                 <h2>⚔️ PvM & Bossing</h2>
@@ -287,12 +102,109 @@
                 </ul>
             </div>
         </div>
+        <!-- Wise Old Man Auto-Updating Section (Moved to Bottom) -->
+        <section class="wom-section" style="margin-top: 50px;">
+            <div class="wom-header">
+                <h2>🏆 Active & Upcoming Competitions</h2>
+                <a id="wom-group-link" href="#" target="_blank" class="btn-wom">View Wise Old Man Group</a>
+            </div>
+            <div id="wom-competitions" class="wom-grid">
+                <div class="comp-card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
+                    Loading clan competitions...
+                </div>
+            </div>
+        </section>
 
+    </div>
     </div>
 
     <footer>
         <p>&copy; Cosmic Order OSRS Clan. Old School RuneScape is a registered trademark of Jagex Ltd.</p>
     </footer>
 
+    <!-- Wise Old Man API Integration Script -->
+    <script>
+        const WOM_GROUP_ID = 14168; 
+
+        document.getElementById('wom-group-link').href = `https://wiseoldman.net/groups/${WOM_GROUP_ID}`;
+
+        async function fetchWOMCompetitions() {
+            const container = document.getElementById('wom-competitions');
+            if (!WOM_GROUP_ID) {
+                container.innerHTML = `
+                    <div class="comp-card" style="grid-column: 1 / -1; text-align: center;">
+                        <p style="color: var(--gold-glow); font-weight: 600;">Wise Old Man Group ID not configured.</p>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">Set <code>WOM_GROUP_ID</code> in <code>index.html</code> to auto-load SOTW & BOTW events.</p>
+                    </div>`;
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://api.wiseoldman.net/v2/groups/${WOM_GROUP_ID}/competitions`);
+                if (!response.ok) throw new Error('Network error fetching competitions');
+                
+                const competitions = await response.json();
+                const now = new Date();
+
+                const activeComps = competitions.filter(comp => new Date(comp.endsAt) > now);
+
+                if (activeComps.length === 0) {
+                    container.innerHTML = `
+                        <div class="comp-card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
+                            No active or upcoming competitions at the moment. Check back soon!
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = activeComps.map(comp => {
+                    const startsAt = new Date(comp.startsAt);
+                    const endsAt = new Date(comp.endsAt);
+                    const isOngoing = now >= startsAt && now <= endsAt;
+
+                    const statusBadge = isOngoing 
+                        ? `<span class="comp-badge badge-active">Live Now</span>`
+                        : `<span class="comp-badge badge-upcoming">Upcoming</span>`;
+
+                    const dateText = isOngoing 
+                        ? `Ends: ${endsAt.toLocaleDateString()} at ${endsAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
+                        : `Starts: ${startsAt.toLocaleDateString()} at ${startsAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+
+                    const metricName = comp.metric ? comp.metric.replace(/_/g, ' ').toUpperCase() : 'EVENT';
+                    const iconUrl = `https://wiseoldman.net/img/metrics/${comp.metric}.png`;
+
+                    return `
+                        <div class="comp-card">
+                            <div>
+                                <div class="comp-card-top">
+                                    <a href="https://wiseoldman.net/competitions/${comp.id}" target="_blank" class="comp-title">${comp.title}</a>
+                                    ${statusBadge}
+                                </div>
+                                <div class="comp-meta">
+                                    <img src="${iconUrl}" alt="${comp.metric}" class="comp-icon" onerror="this.style.display='none'">
+                                    <div class="comp-details">
+                                        <strong>${metricName}</strong>
+                                        <span>${comp.participantCount || 0} Participants</span>
+                                        <span style="margin-top: 4px; font-size: 0.8rem; color: var(--gold-glow);">${dateText}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="https://wiseoldman.net/competitions/${comp.id}" target="_blank" class="btn-wom" style="margin-top: 10px;">
+                                View Leaderboard ➔
+                            </a>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `
+                    <div class="comp-card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
+                        Unable to load competitions from Wise Old Man right now.
+                    </div>`;
+            }
+        }
+
+        fetchWOMCompetitions();
+    </script>
 </body>
 </html>
