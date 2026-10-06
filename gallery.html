@@ -60,8 +60,8 @@
         <!-- Section 1: Clan Events -->
         <div class="category-section" id="section-events">
             <h2 class="category-header">🎉 Clan Events</h2>
-            <div class="carousel-wrapper">
-                <div class="horizontal-grid">
+            <div class="gallery-grid-wrapper">
+                <div class="gallery-grid">
                     <div class="gallery-card gold-border">
                         <div class="img-wrapper">
                             <img src="images/cosmic-banner.png" alt="PvM Bingo Winners">
@@ -96,8 +96,8 @@
         <!-- Section 2: Raids & Bossing -->
         <div class="category-section" id="section-raids">
             <h2 class="category-header">⚔️ Raids & Bossing</h2>
-            <div class="carousel-wrapper">
-                <div class="horizontal-grid">
+            <div class="gallery-grid-wrapper">
+                <div class="gallery-grid">
                     <div class="gallery-card gold-border">
                         <div class="img-wrapper">
                             <img src="images/cosmic-banner.png" alt="ToA Purple Chest">
@@ -141,8 +141,8 @@
         <!-- Section 3: Big Loot & Drops -->
         <div class="category-section" id="section-drops">
             <h2 class="category-header">💰 Big Loot & Drops</h2>
-            <div class="carousel-wrapper">
-                <div class="horizontal-grid">
+            <div class="gallery-grid-wrapper">
+                <div class="gallery-grid">
                     <div class="gallery-card">
                         <div class="img-wrapper">
                             <img src="images/cosmic-banner.png" alt="Corp Sigil Drop">
@@ -177,8 +177,8 @@
         <!-- Section 4: PvP Kills -->
         <div class="category-section" id="section-pvp">
             <h2 class="category-header">🩸 PvP Kills & Wilderness</h2>
-            <div class="carousel-wrapper">
-                <div class="horizontal-grid">
+            <div class="gallery-grid-wrapper">
+                <div class="gallery-grid">
                     <div class="gallery-card gold-border">
                         <div class="img-wrapper">
                             <img src="images/cosmic-banner.png" alt="Revenant Cave Wipe">
@@ -222,10 +222,66 @@
             
             if (checkbox.checked) {
                 section.style.display = 'block';
+                updateGallerySection(section);
             } else {
                 section.style.display = 'none';
             }
         }
+
+        const MAX_VISIBLE_ROWS = 3;
+
+        function getColumnCount(grid) {
+            return getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+        }
+
+        function updateGallerySection(section) {
+            const grid = section.querySelector('.gallery-grid');
+            const cards = [...grid.querySelectorAll('.gallery-card')];
+            const button = section.querySelector('.gallery-toggle');
+            const visibleCardLimit = getColumnCount(grid) * MAX_VISIBLE_ROWS;
+            const isExpanded = section.dataset.expanded === 'true';
+            const hasOverflow = cards.length > visibleCardLimit;
+
+            cards.forEach((card, index) => {
+                card.hidden = !isExpanded && index >= visibleCardLimit;
+            });
+
+            button.hidden = !hasOverflow;
+            button.setAttribute('aria-expanded', String(isExpanded));
+            button.textContent = isExpanded
+                ? 'Show less'
+                : `See more (${cards.length - visibleCardLimit})`;
+        }
+
+        function setupGalleryGrids() {
+            document.querySelectorAll('.category-section').forEach((section, index) => {
+                const grid = section.querySelector('.gallery-grid');
+                const button = document.createElement('button');
+
+                if (!grid.id) grid.id = `gallery-grid-${index + 1}`;
+
+                button.type = 'button';
+                button.className = 'gallery-toggle';
+                button.setAttribute('aria-controls', grid.id);
+                button.addEventListener('click', () => {
+                    section.dataset.expanded = String(section.dataset.expanded !== 'true');
+                    updateGallerySection(section);
+                });
+
+                section.querySelector('.gallery-grid-wrapper').append(button);
+                updateGallerySection(section);
+            });
+        }
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                document.querySelectorAll('.category-section').forEach(updateGallerySection);
+            }, 150);
+        });
+
+        setupGalleryGrids();
     </script>
 </body>
 </html>
