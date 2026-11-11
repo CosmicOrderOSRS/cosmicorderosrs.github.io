@@ -26,15 +26,3 @@ Welcome to the official repository for the **Cosmic Order** landing page. Cosmic
   * Casual community events (Hide & Seek, Quiz Nights, Minigames).
   * Active Discord voice channels and community bantering.
   * Zero-toxicity, friendly environment for all playstyles.
-
----
-
-## 🛠️ Project Structure
-
-```text
-.
-├── index.html            # Main landing page template
-├── favicon.ico           # Primary website favicon
-├── favicon-32x32.png     # PNG fallback favicon
-└── images/
-    └── cosmic-banner.png # Hero banner image
