@@ -140,128 +140,102 @@
     </div> <!-- Closes container -->
 
     <!-- Wise Old Man API Integration Script -->
-    <script>
-        const WOM_GROUP_ID = 14168; 
+<script>
+    const WOM_GROUP_ID = 14168; 
+    document.getElementById('wom-group-link').href = `https://wiseoldman.net/groups/${WOM_GROUP_ID}`;
 
-        document.getElementById('wom-group-link').href = `https://wiseoldman.net/groups/${WOM_GROUP_ID}`;
+    function renderCompetitions(competitions) {
+        const container = document.getElementById('wom-competitions');
+        const now = new Date();
+        const activeComps = competitions.filter(comp => new Date(comp.endsAt) > now);
 
-        async function fetchWOMCompetitions() {
-            const container = document.getElementById('wom-competitions');
-            if (!WOM_GROUP_ID) {
-                container.innerHTML = `
-                    <div class="comp-card" style="grid-column: 1 / -1; text-align: center;">
-                        <p style="color: var(--gold-glow); font-weight: 600;">Wise Old Man Group ID not configured.</p>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">Set <code>WOM_GROUP_ID</code> in <code>index.html</code> to auto-load SOTW & BOTW events.</p>
-                    </div>`;
-                return;
-            }
+        if (activeComps.length === 0) {
+            container.innerHTML = `
+                <div class="comp-card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
+                    No active or upcoming competitions at the moment. Check back soon!
+                </div>`;
+            return;
+        }
 
-            try {
-                const response = await fetch(`https://api.wiseoldman.net/v2/groups/${WOM_GROUP_ID}/competitions`);
-                if (!response.ok) throw new Error('Network error fetching competitions');
-                
-                const competitions = await response.json();
-                const now = new Date();
+        container.innerHTML = activeComps.map(comp => {
+            const startsAt = new Date(comp.startsAt);
+            const endsAt = new Date(comp.endsAt);
+            const isOngoing = now >= startsAt && now <= endsAt;
 
-                const activeComps = competitions.filter(comp => new Date(comp.endsAt) > now);
+            const statusBadge = isOngoing 
+                ? `<span class="comp-badge badge-active">Live Now</span>`
+                : `<span class="comp-badge badge-upcoming">Upcoming</span>`;
 
-                if (activeComps.length === 0) {
-                    container.innerHTML = `
-                        <div class="comp-card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
-                            No active or upcoming competitions at the moment. Check back soon!
-                        </div>`;
-                    return;
-                }
+            const dateText = isOngoing 
+                ? `Ends: ${endsAt.toLocaleDateString()} at ${endsAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
+                : `Starts: ${startsAt.toLocaleDateString()} at ${startsAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
 
-                container.innerHTML = activeComps.map(comp => {
-                    const startsAt = new Date(comp.startsAt);
-                    const endsAt = new Date(comp.endsAt);
-                    const isOngoing = now >= startsAt && now <= endsAt;
+            const metricName = comp.metric ? comp.metric.replace(/_/g, ' ').toUpperCase() : 'EVENT';
+            const iconUrl = `https://wiseoldman.net/img/metrics/${comp.metric}.png`;
 
-                    const statusBadge = isOngoing 
-                        ? `<span class="comp-badge badge-active">Live Now</span>`
-                        : `<span class="comp-badge badge-upcoming">Upcoming</span>`;
-
-                    const dateText = isOngoing 
-                        ? `Ends: ${endsAt.toLocaleDateString()} at ${endsAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
-                        : `Starts: ${startsAt.toLocaleDateString()} at ${startsAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-
-                    const metricName = comp.metric ? comp.metric.replace(/_/g, ' ').toUpperCase() : 'EVENT';
-                    const iconUrl = `https://wiseoldman.net/img/metrics/${comp.metric}.png`;
-
-                    return `
-                        <div class="comp-card">
-                            <div>
-                                <div class="comp-card-top">
-                                    <a href="https://wiseoldman.net/competitions/${comp.id}" target="_blank" class="comp-title">${comp.title}</a>
-                                    ${statusBadge}
-                                </div>
-                                <div class="comp-meta">
-                                    <img src="${iconUrl}" alt="${comp.metric}" class="comp-icon" onerror="this.style.display='none'">
-                                    <div class="comp-details">
-                                        <strong>${metricName}</strong>
-                                        <span>${comp.participantCount || 0} Participants</span>
-                                        <span style="margin-top: 4px; font-size: 0.8rem; color: var(--gold-glow);">${dateText}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="https://wiseoldman.net/competitions/${comp.id}" target="_blank" class="btn-wom" style="margin-top: 10px;">
-                                View Leaderboard ➔
-                            </a>
+            return `
+                <div class="comp-card">
+                    <div>
+                        <div class="comp-card-top">
+                            <a href="https://wiseoldman.net/competitions/${comp.id}" target="_blank" class="comp-title">${comp.title}</a>
+                            ${statusBadge}
                         </div>
-                    `;
-                }).join('');
+                        <div class="comp-meta">
+                            <img src="${iconUrl}" alt="${comp.metric}" class="comp-icon" onerror="this.style.display='none'">
+                            <div class="comp-details">
+                                <strong>${metricName}</strong>
+                               <span>${comp.participantCount || 0} Participants</span>
+                                <span style="margin-top: 4px; font-size: 0.8rem; color: var(--gold-glow);">${dateText}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://wiseoldman.net/competitions/${comp.id}" target="_blank" class="btn-wom" style="margin-top: 10px;">
+                        View Leaderboard ➔
+                    </a>
+                </div>
+            `;
+        }).join('');
+    }
 
-            } catch (err) {
-                console.error(err);
+    async function fetchWOMCompetitions() {
+        const container = document.getElementById('wom-competitions');
+        const CACHE_KEY = 'wom_comps_cache';
+        const CACHE_TIME_KEY = 'wom_comps_time';
+        const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+        const now = new Date().getTime();
+
+        if (cachedData && cachedTime && (now - cachedTime < CACHE_TTL)) {
+            renderCompetitions(JSON.parse(cachedData));
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://api.wiseoldman.net/v2/groups/${WOM_GROUP_ID}/competitions`);
+            if (!response.ok) throw new Error('Network error fetching competitions');
+            
+            const competitions = await response.json();
+            localStorage.setItem(CACHE_KEY, JSON.stringify(competitions));
+            localStorage.setItem(CACHE_TIME_KEY, now);
+
+            renderCompetitions(competitions);
+        } catch (err) {
+            console.error(err);
+            if (cachedData) {
+                renderCompetitions(JSON.parse(cachedData));
+            } else {
                 container.innerHTML = `
                     <div class="comp-card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
                         Unable to load competitions from Wise Old Man right now.
                     </div>`;
             }
         }
-
-        fetchWOMCompetitions();
-    </script>
-
-<!--script> Was working on new api for wiseold man, Seeing if i can make it better some how - Absent
-async function fetchWOMCompetitions() {
-    const container = document.getElementById('wom-competitions');
-    const CACHE_KEY = 'wom_comps_cache';
-    const CACHE_TIME_KEY = 'wom_comps_time';
-    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-    const cachedData = localStorage.getItem(CACHE_KEY);
-    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
-    const now = new Date().getTime();
-
-    if (cachedData && cachedTime && (now - cachedTime < CACHE_TTL)) {
-        renderCompetitions(JSON.parse(cachedData));
-        return;
     }
 
-    try {
-        const response = await fetch(`https://api.wiseoldman.net/v2/groups/${WOM_GROUP_ID}/competitions`);
-        if (!response.ok) throw new Error('Network error fetching competitions');
-        
-        const competitions = await response.json();
-        localStorage.setItem(CACHE_KEY, JSON.stringify(competitions));
-        localStorage.setItem(CACHE_TIME_KEY, now);
-
-        renderCompetitions(competitions);
-    } catch (err) {
-        console.error(err);
-        if (cachedData) {
-            renderCompetitions(JSON.parse(cachedData)); // Fallback to stale cache if offline
-        } else {
-            container.innerHTML = `
-                <div class="comp-card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
-                    Unable to load competitions from Wise Old Man right now.
-                </div>`;
-        }
-    }
-}
-<</script>-->
+    fetchWOMCompetitions();
+</script>
 
     <footer>
         <p>&copy; Cosmic Order OSRS Clan. Old School RuneScape is a registered trademark of Jagex Ltd.</p>
