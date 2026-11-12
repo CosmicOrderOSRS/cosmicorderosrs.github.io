@@ -9,7 +9,7 @@ Welcome to the official repository for the **Cosmic Order** landing page. Cosmic
 ## 🚀 Quick Links & Info
 
 - **In-Game Clan Chat / FC:** `CosmicOrder`
-- **Home World:** World 440
+- **Home World:** World 362
 - **Discord:** [Join Our Discord](https://discord.gg/3sa2c7xxwy)
 - **Target Audience:** All account types (Mains, Ironmen, GIM, Pures) & all levels
 
