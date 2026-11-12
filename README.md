@@ -1,6 +1,6 @@
 # 🌌 Cosmic Order — OSRS Social & PvM Clan Landing Page
 
-![CosmicOrderBanner](images\banner.jpg)
+![cosmicorder](images\banner.png)
 
 Welcome to the official repository for the **Cosmic Order** landing page. Cosmic Order is a community-focused Old School RuneScape (OSRS) clan hosting players across the world, covering everything from beginner-friendly social events to high-tier PvM.
 
