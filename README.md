@@ -1,6 +1,6 @@
 # 🌌 Cosmic Order — OSRS Social & PvM Clan Landing Page
 
-![cosmicorder](images/banner.png)
+![cosmicorder](images/banner.png)[cite: 2]
 
 Welcome to the official repository for the **Cosmic Order** landing page. Cosmic Order is a community-focused Old School RuneScape (OSRS) clan hosting players across the world, covering everything from beginner-friendly social events to high-tier PvM.
 
@@ -9,7 +9,7 @@ Welcome to the official repository for the **Cosmic Order** landing page. Cosmic
 ## 🚀 Quick Links & Info
 
 - **In-Game Clan Chat / FC:** `CosmicOrder`
-- **Home World:** World 440
+- **Home World:** World 362 *(Aligned with index.html)*
 - **Discord:** [Join Our Discord](https://discord.gg/3sa2c7xxwy)
 - **Target Audience:** All account types (Mains, Ironmen, GIM, Pures) & all levels
 
