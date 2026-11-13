@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raid & Boss Split Calculator | Cosmic Order OSRS</title>
+
+    <!-- Primary SEO Meta Tags -->
+    <meta name="title" content="Raid & Boss Split Calculator | Cosmic Order OSRS">
+    <meta name="description" content="Calculate OSRS raid and boss drop splits with automatic 1% Grand Exchange tax deduction, shorthand GP inputs (k/m/b), and one-click Discord split summaries.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cosmicorderosrs.github.io/split-calculator.html">
+
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/png" href="images/Logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/Logo.png">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="images/Logo.png" alt="Cosmic Order Logo">
+                <span class="logo-title">Cosmic Order</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="leaderboard.html">Leaderboards</a></li>
+                <li><a href="split-calculator.html" class="active">Split Calc</a></li>
+                <!--li><a href="https://discord.gg/3sa2c7xxwy" target="_blank">Discord</a></li-->
+            </ul>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1 class="page-title">OSRS Drop <span>Split Calculator</span></h1>
+        <div class="tagline">✦ Fast Raid & Boss Loot Splits with GE Tax Support ✦</div>
+    </div>
+
+    <div class="container">
+        <div class="calc-wrapper">
+            <div class="calc-grid">
+                <div class="form-group">
+                    <label for="drop-name">Drop / Item Name (Optional)</label>
+                    <input type="text" id="drop-name" placeholder="e.g., Tumeken's Shadow" oninput="calculateSplit()">
+                    <span class="input-hint">Used for the Discord split summary</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="drop-value">Total Sale Value (GP)</label>
+                    <input type="text" id="drop-value" value="150m" placeholder="e.g., 150m, 1.4b, 8500000" oninput="calculateSplit()">
+                    <span class="input-hint">Supports shorthand: <strong>k</strong>, <strong>m</strong>, <strong>b</strong></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="team-size">Number of Players Splitting</label>
+                    <input type="number" id="team-size" value="3" min="1" max="100" oninput="calculateSplit()">
+                    <span class="input-hint">Includes the person who received the drop</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="coffer-pct">Optional Clan Coffer Donation (%)</label>
+                    <select id="coffer-pct" onchange="calculateSplit()">
+                        <option value="0" selected>0% (Full Split to Team)</option>
+                        <option value="2">2% Clan Coffer Donation</option>
+                        <option value="5">5% Clan Coffer Donation</option>
+                        <option value="10">10% Clan Coffer Donation</option>
+                    </select>
+                    <span class="input-hint">Supports future clan Bingo & event pots</span>
+                </div>
+            </div>
+
+            <label class="checkbox-row">
+                <input type="checkbox" id="apply-ge-tax" checked onchange="calculateSplit()">
+                <span>Deduct 1% OSRS Grand Exchange Tax (Capped at 5,000,000 GP)</span>
+            </label>
+
+            <div class="results-box">
+                <div class="result-row">
+                    <span>Gross Sale Value:</span>
+                    <strong id="res-gross">150,000,000 GP</strong>
+                </div>
+                <div class="result-row">
+                    <span>Grand Exchange Tax (1%):</span>
+                    <span id="res-tax" style="color: #ff6b6b;">-1,500,000 GP</span>
+                </div>
+                <div class="result-row">
+                    <span>Clan Coffer Contribution:</span>
+                    <span id="res-coffer" style="color: #63b3ed;">0 GP</span>
+                </div>
+                <div class="result-row">
+                    <span>Net Splittable Pot:</span>
+                    <strong id="res-net">148,500,000 GP</strong>
+                </div>
+                <div class="result-row" style="align-items: center; padding-top: 15px;">
+                    <span style="font-size: 1.1rem; font-weight: 700;">Payout Per Player:</span>
+                    <span id="res-per-player" class="payout-highlight">49,500,000 GP</span>
+                </div>
+            </div>
+
+            <button type="button" class="copy-split-btn" id="copy-btn" onclick="copySplitSummary()">
+                📋 Copy Split Breakdown for Discord / CC
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; Cosmic Order OSRS Clan. Old School RuneScape is a registered trademark of Jagex Ltd.</p>
+    </footer>
+
+    <script>
+        function parseOSRSValue(raw) {
+            if (!raw) return 0;
+            const cleaned = raw.toString().trim().toLowerCase().replace(/,/g, '');
+            const match = cleaned.match(/^([\d.]+)\s*([kmb]?)$/);
+            if (!match) return 0;
+
+            let num = parseFloat(match[1]);
+            const suffix = match[2];
+            if (isNaN(num)) return 0;
+
+            if (suffix === 'k') num *= 1_000;
+            if (suffix === 'm') num *= 1_000_000;
+            if (suffix === 'b') num *= 1_000_000_000;
+
+            return Math.floor(num);
+        }
+
+        function formatShortGP(gp) {
+            if (gp >= 1_000_000_000) return (gp / 1_000_000_000).toFixed(2).replace(/\.00$/, '') + 'B';
+            if (gp >= 1_000_000) return (gp / 1_000_000).toFixed(2).replace(/\.00$/, '') + 'M';
+            if (gp >= 1_000) return (gp / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+            return gp.toLocaleString();
+        }
+
+        let latestSummary = '';
+
+        function calculateSplit() {
+            const gross = parseOSRSValue(document.getElementById('drop-value').value);
+            const players = Math.max(1, parseInt(document.getElementById('team-size').value, 10) || 1);
+            const applyTax = document.getElementById('apply-ge-tax').checked;
+            const cofferPct = parseFloat(document.getElementById('coffer-pct').value) || 0;
+            const itemName = document.getElementById('drop-name').value.trim() || 'Clan Drop';
+
+            // OSRS GE tax is 1% capped at 5M per item
+            const tax = applyTax ? Math.min(Math.floor(gross * 0.01), 5_000_000) : 0;
+            const afterTax = Math.max(0, gross - tax);
+            const cofferCut = Math.floor(afterTax * (cofferPct / 100));
+            const netPot = Math.max(0, afterTax - cofferCut);
+            const perPlayer = Math.floor(netPot / players);
+
+            document.getElementById('res-gross').textContent = `${gross.toLocaleString()} GP`;
+            document.getElementById('res-tax').textContent = tax > 0 ? `-${tax.toLocaleString()} GP` : '0 GP';
+            document.getElementById('res-coffer').textContent = cofferCut > 0 ? `-${cofferCut.toLocaleString()} GP (${cofferPct}%)` : '0 GP';
+            document.getElementById('res-net').textContent = `${netPot.toLocaleString()} GP`;
+            document.getElementById('res-per-player').textContent = `${perPlayer.toLocaleString()} GP (${formatShortGP(perPlayer)})`;
+
+            latestSummary = `💰 **Cosmic Order Split — ${itemName}**\n` +
+                `• Sold For: ${gross.toLocaleString()} GP (${formatShortGP(gross)})\n` +
+                `• After Tax${cofferCut > 0 ? ' & Coffer' : ''}: ${netPot.toLocaleString()} GP\n` +
+                `• Split (${players} ways): **${perPlayer.toLocaleString()} GP (${formatShortGP(perPlayer)}) each**`;
+        }
+
+        function copySplitSummary() {
+            navigator.clipboard.writeText(latestSummary).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.textContent = '✅ Copied Split Breakdown!';
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy Split Breakdown for Discord / CC';
+                }, 2500);
+            });
+        }
+
+        calculateSplit();
+    </script>
+</body>
+</html>

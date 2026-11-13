@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boss & Raid Leaderboards | Cosmic Order OSRS</title>
+
+    <!-- Primary SEO Meta Tags -->
+    <meta name="title" content="Boss & Raid Leaderboards | Cosmic Order OSRS">
+    <meta name="description" content="View Cosmic Order OSRS clan kill count leaderboards for all OSRS bosses, raids, and minigames via Wise Old Man.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cosmicorderosrs.github.io/leaderboard.html">
+
+    <!-- Open Graph / Discord Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cosmicorderosrs.github.io/leaderboard.html">
+    <meta property="og:title" content="Boss & Raid Leaderboards | Cosmic Order OSRS">
+    <meta property="og:description" content="Check out top clan PvM kill counts across every boss and raid in Old School RuneScape.">
+    <meta property="og:image" content="https://cosmicorderosrs.github.io/images/Logo.png">
+
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/png" href="images/Logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/Logo.png">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="images/Logo.png" alt="Cosmic Order Logo">
+                <span class="logo-title">Cosmic Order</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="leaderboard.html" class="active">Leaderboards</a></li>
+                <li><a href="split-calculator.html">Split Calc</a></li>
+                <!--li><a href="https://discord.gg/3sa2c7xxwy" target="_blank">Discord</a></li-->
+            </ul>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1 class="page-title">Boss & Raid <span>Leaderboards</span></h1>
+        <div class="tagline">✦ Live Clan Kill Count Milestones via Wise Old Man ✦</div>
+    </div>
+
+    <div class="container">
+        <!-- Search Filter Input -->
+        <input type="text" id="boss-search" class="boss-search-input" placeholder="🔍 Search bosses (e.g. Raids, Nex, Zulrah, Corp)..." oninput="filterBossButtons()">
+
+        <!-- Boss / Raid Filter Buttons Grid -->
+        <div class="boss-selector-grid" id="boss-buttons"></div>
+
+        <!-- Leaderboard Display Card -->
+        <div class="lb-card">
+            <div class="lb-header">
+                <div class="lb-header-title">
+                    <img id="active-boss-icon" src="https://wiseoldman.net/img/metrics/tombs_of_amascut.png" alt="Boss Icon">
+                    <div>
+                        <h2 id="active-boss-name" style="margin: 0;">Tombs of Amascut</h2>
+                        <span style="font-size: 0.82rem; color: var(--text-muted);">Top 25 Clan Members by Kill Count</span>
+                    </div>
+                </div>
+                <a href="https://wiseoldman.net/groups/14168/hiscores" target="_blank" class="btn-wom">Full Hiscores ➔</a>
+            </div>
+
+            <div id="lb-content">
+                <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading clan kill counts...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; Cosmic Order OSRS Clan. Old School RuneScape is a registered trademark of Jagex Ltd.</p>
+    </footer>
+
+    <script>
+        const WOM_GROUP_ID = 14168;
+        const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+        // Complete official Wise Old Man boss list
+        const BOSS_LIST = [
+            { metric: 'abyssal_sire', label: 'Abyssal Sire' },
+            { metric: 'alchemical_hydra', label: 'Alchemical Hydra' },
+            { metric: 'amoxliatl', label: 'Amoxliatl' },
+            { metric: 'araxxor', label: 'Araxxor' },
+            { metric: 'artio', label: 'Artio' },
+            { metric: 'barrows_chests', label: 'Barrows Chests' },
+            { metric: 'bryophyta', label: 'Bryophyta' },
+            { metric: 'callisto', label: 'Callisto' },
+            { metric: 'calvarion', label: 'Calvar\'ion' },
+            { metric: 'cerberus', label: 'Cerberus' },
+            { metric: 'chambers_of_xeric', label: 'CoX (Standard)' },
+            { metric: 'chambers_of_xeric_challenge_mode', label: 'CoX (Challenge Mode)' },
+            { metric: 'chaos_elemental', label: 'Chaos Elemental' },
+            { metric: 'chaos_fanatic', label: 'Chaos Fanatic' },
+            { metric: 'commander_zilyana', label: 'Commander Zilyana (Saradomin)' },
+            { metric: 'corporeal_beast', label: 'Corporeal Beast' },
+            { metric: 'crazy_archaeologist', label: 'Crazy Archaeologist' },
+            { metric: 'dagannoth_prime', label: 'Dagannoth Prime' },
+            { metric: 'dagannoth_rex', label: 'Dagannoth Rex' },
+            { metric: 'dagannoth_supreme', label: 'Dagannoth Supreme' },
+            { metric: 'deranged_archaeologist', label: 'Deranged Archaeologist' },
+            { metric: 'duke_sucellus', label: 'Duke Sucellus' },
+            { metric: 'general_graardor', label: 'General Graardor (Bandos)' },
+            { metric: 'giant_mole', label: 'Giant Mole' },
+            { metric: 'grotesque_guardians', label: 'Grotesque Guardians' },
+            { metric: 'hespori', label: 'Hespori' },
+            { metric: 'kalphite_queen', label: 'Kalphite Queen' },
+            { metric: 'king_black_dragon', label: 'King Black Dragon' },
+            { metric: 'kraken', label: 'Kraken' },
+            { metric: 'kreearra', label: 'Kree\'arra (Armadyl)' },
+            { metric: 'kril_tsutsaroth', label: 'K\'ril Tsutsaroth (Zamorak)' },
+            { metric: 'lunar_chests', label: 'Lunar Chests' },
+            { metric: 'mimic', label: 'The Mimic' },
+            { metric: 'nex', label: 'Nex' },
+            { metric: 'nightmare', label: 'The Nightmare' },
+            { metric: 'phosanis_nightmare', label: 'Phosani\'s Nightmare' },
+            { metric: 'obor', label: 'Obor' },
+            { metric: 'phantom_muspah', label: 'Phantom Muspah' },
+            { metric: 'sarachnis', label: 'Sarachnis' },
+            { metric: 'scorpia', label: 'Scorpia' },
+            { metric: 'scurrius', label: 'Scurrius' },
+            { metric: 'skotizo', label: 'Skotizo' },
+            { metric: 'sol_hereditit', label: 'Sol Heredit' },
+            { metric: 'spindel', label: 'Spindel' },
+            { metric: 'tempoross', label: 'Tempoross' },
+            { metric: 'the_gauntlet', label: 'The Gauntlet' },
+            { metric: 'the_corrupted_gauntlet', label: 'The Corrupted Gauntlet' },
+            { metric: 'the_hueycoatl', label: 'The Hueycoatl' },
+            { metric: 'theatre_of_blood', label: 'Theatre of Blood (Standard)' },
+            { metric: 'theatre_of_blood_hard_mode', label: 'Theatre of Blood (Hard Mode)' },
+            { metric: 'thermonuclear_smoke_devil', label: 'Thermonuclear Smoke Devil' },
+            { metric: 'tibi_and_tome', label: 'Tibi & Tome' },
+            { metric: 'tombs_of_amascut', label: 'Tombs of Amascut (Normal)' },
+            { metric: 'tombs_of_amascut_expert', label: 'Tombs of Amascut (Expert)' },
+            { metric: 'tzhaar_ket_rak', label: 'TzHaar-Ket-Rak\'s Challenges' },
+            { metric: 'tztok_jad', label: 'TzTok-Jad (Fight Caves)' },
+            { metric: 'ket_veki', label: 'TzKal-Zuk (Inferno)' },
+            { metric: 'vardorvis', label: 'Vardorvis' },
+            { metric: 'venenatis', label: 'Venenatis' },
+            { metric: 'vetion', label: 'Vet\'ion' },
+            { metric: 'vorkath', label: 'Vorkath' },
+            { metric: 'wintertodt', label: 'Wintertodt' },
+            { metric: 'zalcano', label: 'Zalcano' },
+            { metric: 'zulrah', label: 'Zulrah' }
+        ];
+
+        let currentMetric = BOSS_LIST.find(b => b.metric === 'tombs_of_amascut') ? 'tombs_of_amascut' : BOSS_LIST[0].metric;
+
+        function renderBossButtons(filter = '') {
+            const container = document.getElementById('boss-buttons');
+            const query = filter.toLowerCase().trim();
+
+            const filtered = BOSS_LIST.filter(boss => boss.label.toLowerCase().includes(query));
+
+            if (!filtered.length) {
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; width: 100%; padding: 15px;">No bosses found matching "${filter}"</p>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(boss => `
+                <button type="button" 
+                        class="boss-btn ${boss.metric === currentMetric ? 'active' : ''}" 
+                        onclick="selectBoss('${boss.metric}', '${boss.label.replace(/'/g, "\\'")}')">
+                    <img src="https://wiseoldman.net/img/metrics/${boss.metric}.png" alt="${boss.label}" onerror="this.style.display='none'">
+                    <span>${boss.label}</span>
+                </button>
+            `).join('');
+        }
+
+        function filterBossButtons() {
+            const query = document.getElementById('boss-search').value;
+            renderBossButtons(query);
+        }
+
+        function renderLeaderboardTable(entries) {
+            const content = document.getElementById('lb-content');
+            const validEntries = entries.filter(e => e.data && e.data.kills > 0).slice(0, 25);
+
+            if (!validEntries.length) {
+                content.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">No ranked kill counts recorded for this boss yet.</p>`;
+                return;
+            }
+
+            content.innerHTML = `
+                <table class="lb-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">Rank</th>
+                            <th>Player</th>
+                            <th>Account Type</th>
+                            <th style="text-align: right;">Kill Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${validEntries.map((entry, idx) => {
+                            const rank = idx + 1;
+                            const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+                            const medal = rank === 1 ? '🥇 ' : rank === 2 ? '🥈 ' : rank === 3 ? '🥉 ' : `#${rank}`;
+                            const playerName = entry.player.displayName;
+                            const acctType = entry.player.type ? entry.player.type.toUpperCase() : 'REGULAR';
+
+                            return `
+                                <tr>
+                                    <td class="${rankClass}">${medal}</td>
+                                    <td>
+                                        <a href="https://wiseoldman.net/players/${encodeURIComponent(playerName)}" target="_blank" class="player-link">
+                                            ${playerName}
+                                        </a>
+                                    </td>
+                                    <td style="font-size: 0.8rem; color: var(--text-muted);">${acctType}</td>
+                                    <td class="kc-val">${Number(entry.data.kills).toLocaleString()} KC</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function loadBossLeaderboard(metric) {
+            const content = document.getElementById('lb-content');
+            const cacheKey = `wom_lb_top25_${metric}`;
+            const cacheTimeKey = `wom_lb_top25_time_${metric}`;
+            const now = Date.now();
+
+            const cached = localStorage.getItem(cacheKey);
+            const cachedTime = localStorage.getItem(cacheTimeKey);
+
+            if (cached && cachedTime && (now - cachedTime < CACHE_TTL)) {
+                renderLeaderboardTable(JSON.parse(cached));
+                return;
+            }
+
+            content.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Fetching hiscores from Wise Old Man...</p>`;
+
+            try {
+                const res = await fetch(`https://api.wiseoldman.net/v2/groups/${WOM_GROUP_ID}/hiscores?metric=${metric}&limit=30`);
+                if (!res.ok) throw new Error('Failed to fetch hiscores');
+
+                const data = await res.json();
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+                localStorage.setItem(cacheTimeKey, now);
+
+                renderLeaderboardTable(data);
+            } catch (err) {
+                console.error(err);
+                if (cached) {
+                    renderLeaderboardTable(JSON.parse(cached));
+                } else {
+                    content.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Unable to load hiscores right now. Try again shortly.</p>`;
+                }
+            }
+        }
+
+        function selectBoss(metric, label) {
+            currentMetric = metric;
+            document.getElementById('active-boss-name').textContent = label;
+            document.getElementById('active-boss-icon').src = `https://wiseoldman.net/img/metrics/${metric}.png`;
+            renderBossButtons(document.getElementById('boss-search').value);
+            loadBossLeaderboard(metric);
+        }
+
+        renderBossButtons();
+        loadBossLeaderboard(currentMetric);
+    </script>
+</body>
+</html>
