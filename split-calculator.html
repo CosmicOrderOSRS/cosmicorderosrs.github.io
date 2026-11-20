@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raid & Boss Split Calculator | Cosmic Order OSRS</title>
+    <title>Raid &amp; Boss Split Calculator | Cosmic Order OSRS</title>
 
     <!-- Primary SEO Meta Tags -->
-    <meta name="title" content="Raid & Boss Split Calculator | Cosmic Order OSRS">
-    <meta name="description" content="Calculate OSRS raid and boss drop splits with automatic 1% Grand Exchange tax deduction, shorthand GP inputs (k/m/b), and one-click Discord split summaries.">
+    <meta name="title" content="Raid &amp; Boss Split Calculator | Cosmic Order OSRS">
+    <meta name="description" content="Calculate OSRS raid and boss drop splits with 1% Grand Exchange tax deduction, quick GP presets, custom coffer cuts, unequal shares, and custom percentages.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://cosmicorderosrs.github.io/split-calculator.html">
 
@@ -30,7 +30,7 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="leaderboard.html">Leaderboards</a></li>
-                <li><a href="split-calculator.html" class="active">Split Calc</a></li>
+                <li><a href="split-calculator.html" class="active">Split Calculator</a></li>
                 <!--li><a href="https://discord.gg/3sa2c7xxwy" target="_blank">Discord</a></li-->
             </ul>
         </div>
@@ -38,11 +38,17 @@
 
     <div class="page-header">
         <h1 class="page-title">OSRS Drop <span>Split Calculator</span></h1>
-        <div class="tagline">✦ Fast Raid & Boss Loot Splits with GE Tax Support ✦</div>
+        <div class="tagline">✦ Raid &amp; Boss Splits with Presets, Custom Shares &amp; GE Tax ✦</div>
     </div>
 
     <div class="container">
         <div class="calc-wrapper">
+            <div class="mode-tabs" role="tablist" aria-label="Split calculation mode">
+                <button type="button" class="mode-tab active" data-mode="even" onclick="setSplitMode('even')">Even Split</button>
+                <button type="button" class="mode-tab" data-mode="shares" onclick="setSplitMode('shares')">Custom Shares</button>
+                <button type="button" class="mode-tab" data-mode="percent" onclick="setSplitMode('percent')">Custom %</button>
+            </div>
+
             <div class="calc-grid">
                 <div class="form-group">
                     <label for="drop-name">Drop / Item Name (Optional)</label>
@@ -53,25 +59,51 @@
                 <div class="form-group">
                     <label for="drop-value">Total Sale Value (GP)</label>
                     <input type="text" id="drop-value" value="150m" placeholder="e.g., 150m, 1.4b, 8500000" oninput="calculateSplit()">
+                    <div class="preset-row" aria-label="Quick GP presets">
+                        <button type="button" class="preset-btn" onclick="setDropPreset('5m')">5m</button>
+                        <button type="button" class="preset-btn" onclick="setDropPreset('25m')">25m</button>
+                        <button type="button" class="preset-btn" onclick="setDropPreset('100m')">100m</button>
+                        <button type="button" class="preset-btn" onclick="setDropPreset('500m')">500m</button>
+                        <button type="button" class="preset-btn" onclick="setDropPreset('1b')">1b</button>
+                    </div>
                     <span class="input-hint">Supports shorthand: <strong>k</strong>, <strong>m</strong>, <strong>b</strong></span>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="even-players-group">
                     <label for="team-size">Number of Players Splitting</label>
                     <input type="number" id="team-size" value="3" min="1" max="100" oninput="calculateSplit()">
                     <span class="input-hint">Includes the person who received the drop</span>
                 </div>
 
                 <div class="form-group">
-                    <label for="coffer-pct">Optional Clan Coffer Donation (%)</label>
-                    <select id="coffer-pct" onchange="calculateSplit()">
-                        <option value="0" selected>0% (Full Split to Team)</option>
-                        <option value="2">2% Clan Coffer Donation</option>
-                        <option value="5">5% Clan Coffer Donation</option>
-                        <option value="10">10% Clan Coffer Donation</option>
-                    </select>
-                    <span class="input-hint">Supports future clan Bingo & event pots</span>
+                    <label for="coffer-pct">Clan Coffer Cut (%)</label>
+                    <div class="coffer-combo">
+                        <select id="coffer-pct" onchange="syncCofferSelect()">
+                            <option value="0" selected>0% (Full Split)</option>
+                            <option value="2">2% Coffer</option>
+                            <option value="5">5% Coffer</option>
+                            <option value="10">10% Coffer</option>
+                            <option value="custom">Custom %</option>
+                        </select>
+                        <div class="coffer-custom-wrap">
+                            <input type="number" id="coffer-custom" value="0" min="0" max="100" step="0.5" oninput="syncCofferCustom()" aria-label="Custom coffer percentage">
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">%</span>
+                        </div>
+                    </div>
+                    <span class="input-hint">Pick a preset or type any custom coffer %</span>
                 </div>
+            </div>
+
+            <div class="custom-split-panel" id="custom-split-panel" hidden>
+                <div class="custom-split-header">
+                    <h3 id="custom-panel-title">Custom Shares &amp; Deductions</h3>
+                    <span class="pct-status pct-valid" id="custom-status-badge">Total Shares: 3</span>
+                </div>
+                <p class="input-hint" id="custom-panel-hint" style="margin-bottom: 12px;">
+                    Use share weights (e.g., <code>1</code> normal, <code>1.5</code> MVP bonus) and optional flat supply/death adjustments (e.g., <code>-2m</code> or <code>+1m</code>).
+                </p>
+                <div class="participant-rows" id="participant-rows"></div>
+                <button type="button" class="add-row-btn" onclick="addParticipantRow()">+ Add Player</button>
             </div>
 
             <label class="checkbox-row">
@@ -96,10 +128,11 @@
                     <span>Net Splittable Pot:</span>
                     <strong id="res-net">148,500,000 GP</strong>
                 </div>
-                <div class="result-row" style="align-items: center; padding-top: 15px;">
+                <div class="result-row" id="even-payout-row" style="align-items: center; padding-top: 15px;">
                     <span style="font-size: 1.1rem; font-weight: 700;">Payout Per Player:</span>
                     <span id="res-per-player" class="payout-highlight">49,500,000 GP</span>
                 </div>
+                <div class="breakdown-list" id="custom-breakdown-list" hidden></div>
             </div>
 
             <button type="button" class="copy-split-btn" id="copy-btn" onclick="copySplitSummary()">
@@ -113,10 +146,19 @@
     </footer>
 
     <script>
+        let splitMode = 'even';
+        let latestSummary = '';
+
+        const DEFAULT_PARTICIPANTS = [
+            { name: 'Player 1 (MVP)', weightOrPct: '1.5', pct: '40', adj: '0' },
+            { name: 'Player 2', weightOrPct: '1', pct: '35', adj: '0' },
+            { name: 'Player 3', weightOrPct: '1', pct: '25', adj: '-2m' }
+        ];
+
         function parseOSRSValue(raw) {
-            if (!raw) return 0;
+            if (raw === null || raw === undefined) return 0;
             const cleaned = raw.toString().trim().toLowerCase().replace(/,/g, '');
-            const match = cleaned.match(/^([\d.]+)\s*([kmb]?)$/);
+            const match = cleaned.match(/^([+-]?[\d.]+)\s*([kmb]?)$/);
             if (!match) return 0;
 
             let num = parseFloat(match[1]);
@@ -127,42 +169,259 @@
             if (suffix === 'm') num *= 1_000_000;
             if (suffix === 'b') num *= 1_000_000_000;
 
-            return Math.floor(num);
+            return Math.trunc(num);
         }
 
         function formatShortGP(gp) {
-            if (gp >= 1_000_000_000) return (gp / 1_000_000_000).toFixed(2).replace(/\.00$/, '') + 'B';
-            if (gp >= 1_000_000) return (gp / 1_000_000).toFixed(2).replace(/\.00$/, '') + 'M';
-            if (gp >= 1_000) return (gp / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
-            return gp.toLocaleString();
+            const sign = gp < 0 ? '-' : '';
+            const abs = Math.abs(gp);
+            if (abs >= 1_000_000_000) return sign + (abs / 1_000_000_000).toFixed(2).replace(/\.00$/, '') + 'B';
+            if (abs >= 1_000_000) return sign + (abs / 1_000_000).toFixed(2).replace(/\.00$/, '') + 'M';
+            if (abs >= 1_000) return sign + (abs / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+            return sign + abs.toLocaleString();
         }
 
-        let latestSummary = '';
+        function setDropPreset(preset) {
+            document.getElementById('drop-value').value = preset;
+            calculateSplit();
+        }
+
+        function syncCofferSelect() {
+            const sel = document.getElementById('coffer-pct');
+            const customInput = document.getElementById('coffer-custom');
+            if (sel.value !== 'custom') {
+                customInput.value = sel.value;
+            }
+            calculateSplit();
+        }
+
+        function syncCofferCustom() {
+            const customInput = document.getElementById('coffer-custom');
+            const sel = document.getElementById('coffer-pct');
+            const val = parseFloat(customInput.value);
+            const presets = ['0', '2', '5', '10'];
+            if (!isNaN(val) && presets.includes(String(val))) {
+                sel.value = String(val);
+            } else {
+                sel.value = 'custom';
+            }
+            calculateSplit();
+        }
+
+        function getCofferPercentage() {
+            const raw = parseFloat(document.getElementById('coffer-custom').value);
+            if (isNaN(raw)) return 0;
+            return Math.min(100, Math.max(0, raw));
+        }
+
+        function renderParticipantRows(rowsData) {
+            const container = document.getElementById('participant-rows');
+            container.innerHTML = '';
+
+            rowsData.forEach((p, idx) => {
+                const row = document.createElement('div');
+                row.className = 'participant-row';
+
+                const valuePlaceholder = splitMode === 'percent' ? '% Share (e.g. 40)' : 'Shares (e.g. 1.5)';
+                const valueVal = splitMode === 'percent' ? (p.pct ?? '25') : (p.weightOrPct ?? '1');
+
+                row.innerHTML = `
+                    <input type="text" class="p-name" value="${escapeAttr(p.name || `Player ${idx + 1}`)}" placeholder="Player name" oninput="calculateSplit()">
+                    <input type="number" step="any" class="p-alloc" value="${escapeAttr(valueVal)}" placeholder="${valuePlaceholder}" oninput="calculateSplit()">
+                    <input type="text" class="p-adj" value="${escapeAttr(p.adj || '0')}" placeholder="Adj GP (e.g. -2m)" oninput="calculateSplit()">
+                    <button type="button" class="remove-row-btn" onclick="removeParticipantRow(this)" aria-label="Remove player">✕</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function escapeAttr(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+        }
+
+        function snapshotParticipants() {
+            const rows = [...document.querySelectorAll('#participant-rows .participant-row')];
+            return rows.map((row, idx) => {
+                const name = row.querySelector('.p-name').value.trim() || `Player ${idx + 1}`;
+                const alloc = row.querySelector('.p-alloc').value;
+                const adj = row.querySelector('.p-adj').value;
+                return {
+                    name,
+                    weightOrPct: splitMode === 'shares' ? alloc : '1',
+                    pct: splitMode === 'percent' ? alloc : '0',
+                    adj
+                };
+            });
+        }
+
+        function addParticipantRow() {
+            const current = snapshotParticipants();
+            const nextNum = current.length + 1;
+            current.push({
+                name: `Player ${nextNum}`,
+                weightOrPct: '1',
+                pct: '0',
+                adj: '0'
+            });
+            renderParticipantRows(current);
+            calculateSplit();
+        }
+
+        function removeParticipantRow(btn) {
+            const current = snapshotParticipants();
+            if (current.length <= 1) return;
+            const rowIndex = [...document.querySelectorAll('#participant-rows .participant-row')].indexOf(btn.closest('.participant-row'));
+            current.splice(rowIndex, 1);
+            renderParticipantRows(current);
+            calculateSplit();
+        }
+
+        function setSplitMode(mode) {
+            const previousSnapshot = snapshotParticipants();
+            splitMode = mode;
+
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.mode === mode);
+            });
+
+            const evenGroup = document.getElementById('even-players-group');
+            const customPanel = document.getElementById('custom-split-panel');
+            const evenPayoutRow = document.getElementById('even-payout-row');
+            const breakdownList = document.getElementById('custom-breakdown-list');
+            const panelTitle = document.getElementById('custom-panel-title');
+            const panelHint = document.getElementById('custom-panel-hint');
+
+            if (mode === 'even') {
+                evenGroup.hidden = false;
+                customPanel.hidden = true;
+                evenPayoutRow.hidden = false;
+                breakdownList.hidden = true;
+            } else {
+                evenGroup.hidden = true;
+                customPanel.hidden = false;
+                evenPayoutRow.hidden = true;
+                breakdownList.hidden = false;
+
+                const seedRows = previousSnapshot.length ? previousSnapshot : DEFAULT_PARTICIPANTS;
+                if (mode === 'shares') {
+                    panelTitle.textContent = 'Custom Shares & Deductions';
+                    panelHint.innerHTML = 'Enter share weights (e.g., <code>1</code> normal, <code>1.5</code> MVP bonus) and optional flat supply/death adjustments (e.g., <code>-2m</code> or <code>+1m</code>).';
+                } else {
+                    panelTitle.textContent = 'Custom Percentage Split & Deductions';
+                    panelHint.innerHTML = 'Enter each player\'s percentage of the split pot (aim for <code>100%</code> total) plus optional flat GP adjustments (e.g., <code>-2m</code>).';
+                }
+                renderParticipantRows(seedRows);
+            }
+
+            calculateSplit();
+        }
 
         function calculateSplit() {
-            const gross = parseOSRSValue(document.getElementById('drop-value').value);
-            const players = Math.max(1, parseInt(document.getElementById('team-size').value, 10) || 1);
+            const gross = Math.max(0, parseOSRSValue(document.getElementById('drop-value').value));
             const applyTax = document.getElementById('apply-ge-tax').checked;
-            const cofferPct = parseFloat(document.getElementById('coffer-pct').value) || 0;
+            const cofferPct = getCofferPercentage();
             const itemName = document.getElementById('drop-name').value.trim() || 'Clan Drop';
 
-            // OSRS GE tax is 1% capped at 5M per item
             const tax = applyTax ? Math.min(Math.floor(gross * 0.01), 5_000_000) : 0;
             const afterTax = Math.max(0, gross - tax);
             const cofferCut = Math.floor(afterTax * (cofferPct / 100));
             const netPot = Math.max(0, afterTax - cofferCut);
-            const perPlayer = Math.floor(netPot / players);
 
             document.getElementById('res-gross').textContent = `${gross.toLocaleString()} GP`;
             document.getElementById('res-tax').textContent = tax > 0 ? `-${tax.toLocaleString()} GP` : '0 GP';
             document.getElementById('res-coffer').textContent = cofferCut > 0 ? `-${cofferCut.toLocaleString()} GP (${cofferPct}%)` : '0 GP';
             document.getElementById('res-net').textContent = `${netPot.toLocaleString()} GP`;
-            document.getElementById('res-per-player').textContent = `${perPlayer.toLocaleString()} GP (${formatShortGP(perPlayer)})`;
 
-            latestSummary = `💰 **Cosmic Order Split — ${itemName}**\n` +
+            if (splitMode === 'even') {
+                const players = Math.max(1, parseInt(document.getElementById('team-size').value, 10) || 1);
+                const perPlayer = Math.floor(netPot / players);
+                document.getElementById('res-per-player').textContent = `${perPlayer.toLocaleString()} GP (${formatShortGP(perPlayer)})`;
+
+                latestSummary =
+                    `💰 **Cosmic Order Split — ${itemName}**\n` +
+                    `• Sold For: ${gross.toLocaleString()} GP (${formatShortGP(gross)})\n` +
+                    `• After Tax${cofferCut > 0 ? ` & ${cofferPct}% Coffer` : ''}: ${netPot.toLocaleString()} GP\n` +
+                    `• Split (${players} even ways): **${perPlayer.toLocaleString()} GP (${formatShortGP(perPlayer)}) each**`;
+                return;
+            }
+
+            const rows = [...document.querySelectorAll('#participant-rows .participant-row')];
+            const playersData = rows.map((row, idx) => {
+                const name = row.querySelector('.p-name').value.trim() || `Player ${idx + 1}`;
+                const allocVal = parseFloat(row.querySelector('.p-alloc').value);
+                const adjGp = parseOSRSValue(row.querySelector('.p-adj').value);
+                return {
+                    name,
+                    alloc: isNaN(allocVal) ? 0 : Math.max(0, allocVal),
+                    adjGp
+                };
+            });
+
+            const totalAdj = playersData.reduce((acc, p) => acc + p.adjGp, 0);
+            const distributableAfterAdj = netPot - totalAdj;
+            const badge = document.getElementById('custom-status-badge');
+            const breakdownList = document.getElementById('custom-breakdown-list');
+
+            let payouts = [];
+            let summaryLines = [];
+
+            if (splitMode === 'shares') {
+                const totalShares = playersData.reduce((acc, p) => acc + p.alloc, 0);
+                badge.textContent = `Total Shares: ${totalShares}`;
+                badge.className = `pct-status ${totalShares > 0 ? 'pct-valid' : 'pct-warn'}`;
+
+                payouts = playersData.map(p => {
+                    const sharePortion = totalShares > 0 ? Math.floor(distributableAfterAdj * (p.alloc / totalShares)) : 0;
+                    const finalPayout = sharePortion + p.adjGp;
+                    return {
+                        name: p.name,
+                        detail: `${p.alloc} ${p.alloc === 1 ? 'share' : 'shares'}${p.adjGp !== 0 ? ` (${p.adjGp > 0 ? '+' : ''}${formatShortGP(p.adjGp)} adj)` : ''}`,
+                        amount: finalPayout
+                    };
+                });
+            } else {
+                const totalPct = playersData.reduce((acc, p) => acc + p.alloc, 0);
+                const roundedPct = Math.round(totalPct * 100) / 100;
+                badge.textContent = `Total: ${roundedPct}%`;
+                badge.className = `pct-status ${Math.abs(roundedPct - 100) < 0.01 ? 'pct-valid' : 'pct-warn'}`;
+
+                payouts = playersData.map(p => {
+                    const pctPortion = Math.floor(distributableAfterAdj * (p.alloc / 100));
+                    const finalPayout = pctPortion + p.adjGp;
+                    return {
+                        name: p.name,
+                        detail: `${p.alloc}%${p.adjGp !== 0 ? ` (${p.adjGp > 0 ? '+' : ''}${formatShortGP(p.adjGp)} adj)` : ''}`,
+                        amount: finalPayout
+                    };
+                });
+            }
+
+            breakdownList.innerHTML = payouts.map(item => `
+                <div class="breakdown-item">
+                    <div>
+                        <strong>${escapeHtml(item.name)}</strong>
+                        <span class="breakdown-meta"> — ${escapeHtml(item.detail)}</span>
+                    </div>
+                    <div class="breakdown-amount">${item.amount.toLocaleString()} GP (${formatShortGP(item.amount)})</div>
+                </div>
+            `).join('');
+
+            summaryLines = payouts.map(item =>
+                `  - ${item.name} [${item.detail}]: **${item.amount.toLocaleString()} GP (${formatShortGP(item.amount)})**`
+            );
+
+            latestSummary =
+                `💰 **Cosmic Order Split — ${itemName}**\n` +
                 `• Sold For: ${gross.toLocaleString()} GP (${formatShortGP(gross)})\n` +
-                `• After Tax${cofferCut > 0 ? ' & Coffer' : ''}: ${netPot.toLocaleString()} GP\n` +
-                `• Split (${players} ways): **${perPlayer.toLocaleString()} GP (${formatShortGP(perPlayer)}) each**`;
+                `• After Tax${cofferCut > 0 ? ` & ${cofferPct}% Coffer` : ''}: ${netPot.toLocaleString()} GP\n` +
+                `• Breakdown:\n${summaryLines.join('\n')}`;
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
         }
 
         function copySplitSummary() {
